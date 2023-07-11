@@ -8,17 +8,29 @@ const Header = ({text}) => {
 }
 
 const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>
-    {text}
-  </button>
+  <button onClick={handleClick}>{text}</button>
 )
 
-const History = ({good, neutral, bad}) => {
+const Statistics = ({good, neutral, bad}) => {
+
+   const percentage = () => {
+      if(good+neutral+bad==0) return 0
+      else return good/(good+neutral+bad)*100
+   }
+
+   const average = () => {
+      if(good+neutral+bad==0) return 0
+      else return (good + neutral*0 + bad*(-1))/(good+neutral+bad)
+   }
+
    return (
       <div>
          <p>good {good}</p>
          <p>neutral {neutral}</p>
          <p>bad {bad}</p>
+         <p>all {good+neutral+bad}</p>
+         <p>averge {average()}</p>
+         <p>positive {percentage()}%</p>
       </div>
    )
 
@@ -49,7 +61,7 @@ const App = () => {
          <Button handleClick={handleNeutralClick} text='neutral' />
          <Button handleClick={handleBadClick} text='bad' />
          <Header text='statistics'/>
-         <History good={good} neutral={neutral} bad={bad} />
+         <Statistics good={good} neutral={neutral} bad={bad} />
       </div>
    )
 }
