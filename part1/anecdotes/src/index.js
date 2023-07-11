@@ -3,9 +3,16 @@ import { createRoot } from 'react-dom/client';
 
 const App = ({anecdotes}) => {
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(Array(9).fill(0))
 
   const randomAnecdote = () => {
       return setSelected(Math.floor(Math.random() * anecdotes.length))
+  }
+
+  const voteAnecdote = () => {
+   const nextVotes = [...votes]
+   nextVotes[selected] += 1
+   setVotes(nextVotes)
   }
 
    return (
@@ -13,6 +20,10 @@ const App = ({anecdotes}) => {
          <div>
             {anecdotes[selected]}
          </div>
+         <div>
+            has {votes[selected]} votes
+         </div>
+         <Button handleClick={voteAnecdote} text="vote" />
          <Button handleClick={randomAnecdote} text="next anecdote" />
       </>
    )
