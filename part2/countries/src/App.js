@@ -10,15 +10,14 @@ function App() {
     setCountry(event.target.value)
   }
 
+  const showCountry = (country) => {
+    setCountry(country)
+  }
+
   useEffect(() =>{
-    console.log('effect')
     const promise = axios.get('https://studies.cs.helsinki.fi/restcountries/api/all')
-    console.log(promise)
     promise.then(response => {
-      console.log('promised fullfiled')
-      console.log(response)
       setCountries(response.data)
-      console.log(countries)
     })
   },[])
 
@@ -27,12 +26,16 @@ function App() {
     return countries.filter(country => country.name.common.toLowerCase().includes(newCountry.toLowerCase()))
   }
 
+  const handleClick = (event) => {
+    setCountry(event.target.value)
+  }
+
   return (
     <>
       <div className="App">
         Find countries <input value={newCountry} onChange={countryChangeHandler}/>
       </div>
-      <Countries countries={aux()}/>
+      <Countries countries={aux()} handleClick={handleClick}/>
     </>
   );
 }

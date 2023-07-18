@@ -1,15 +1,19 @@
-const Countries = ({countries}) => {
-	console.log(countries.length);
+const Countries = ({countries, handleClick}) => {
+
 	if(countries.length === 1){
-		console.log('entra');
 		return (
 			<Country key={countries[0].name.common} name={countries[0].name.common} capital={countries[0].capital}
 			population={countries[0].population} languages={countries[0].languages} flag={countries[0].flags}/>
 		)
 	}else if(countries.length <= 10){
-		console.log('no entra');
 		return (
-			countries.map(country => (<div key={country.name.common}>{country.name.common}</div>))
+			countries.map(country => {
+				return (
+					<div key={country.name.common}>
+						{country.name.common}<button value={country.name.common} onClick={handleClick}>show</button>
+					</div>
+				)		
+			})
 		)
 		
 	}else{
@@ -17,9 +21,8 @@ const Countries = ({countries}) => {
 	}
 }
 
+
 const Country = ({name, capital, population, languages, flag}) => {
-	
-	
 	
 	return (
 		<>
@@ -38,4 +41,5 @@ const Country = ({name, capital, population, languages, flag}) => {
 		</>
 	)	
 }
+
 export default Countries;
