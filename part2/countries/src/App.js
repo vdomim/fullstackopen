@@ -5,13 +5,9 @@ import Countries from './components/Countries'
 function App() {
   const [countries, setCountries] = useState([])
   const [newCountry, setCountry] = useState("")
-
+  const apiid = process.env.REACT_APP_API_KEY
   const countryChangeHandler = (event) =>{
     setCountry(event.target.value)
-  }
-
-  const showCountry = (country) => {
-    setCountry(country)
   }
 
   useEffect(() =>{
@@ -35,7 +31,7 @@ function App() {
       <div className="App">
         Find countries <input value={newCountry} onChange={countryChangeHandler}/>
       </div>
-      <Countries countries={aux()} handleClick={handleClick}/>
+      <Countries countries={aux()} handleClick={handleClick} apiid={apiid}/>
     </>
   );
 }
