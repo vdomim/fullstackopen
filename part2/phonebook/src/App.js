@@ -2,6 +2,7 @@ import React, { useState, useEffect  } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -9,12 +10,12 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter ] = useState('')
+  const [ infoMessage, setInfoMessage] = useState(null)
+  const [ infoType, setInfoType ] = useState('')
 
   useEffect(() => {
-    console.log('effect')
     personService.getAll()
     .then(initialPersons => {
-      console.log('promised fullfiled')
       setPersons(initialPersons)
     })
   },[])
@@ -23,19 +24,22 @@ const App = () => {
     event.preventDefault()
     const nameObject = {name: newName, number: newNumber}
     const personExists = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())[0]
-    console.log(personExists);
-    if(personExists.length !== 0){
+    if(personExists !== undefined){
       const personId = personExists.id
-      console.log(personId);
       if(window.confirm(`${newName} is already added to the Phonebook, replace the old number with a new one?`)){
-        console.log("replacing")
         const newPerson = {...personExists, number: newNumber}
         personService.update(personId, newPerson)
         .then(updatedPerson =>{
-          console.log("Updated")
           setNewName("")
           setNewNumber("")
           setPersons(persons.map(person => person.id !== personId ? person : updatedPerson))
+          setInfoType("successful")
+          setInfoMessage(
+            `Updated ${newName} number`
+          )
+          setTimeout(() => {
+            setInfoMessage(null)
+          }, 5000)
         })
       }
     }else{
@@ -43,6 +47,13 @@ const App = () => {
         setPersons(persons.concat(newPerson))
         setNewName("")
         setNewNumber("")
+        setInfoType("successful")
+        setInfoMessage(
+            `Added ${newName}`
+          )
+        setTimeout(() => {
+          setInfoMessage(null)
+        }, 5000)
       })
     }
   }
@@ -71,7 +82,25 @@ const App = () => {
           personService.getAll()
           .then(initialPersons => {
             setPersons(initialPersons)
+            setInfoType("successful")
+            setInfoMessage(
+                `Deleted ${event.target.value}`
+              )
+            setTimeout(() => {
+              setInfoMessage(null)
+            }, 5000)
           })
+        })
+      .catch(error => {
+        personService.getAll()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+        })
+        setInfoType("error")
+        setInfoMessage(`Information of ${event.target.value} has already beenn removed from server`)
+        setTimeout(() => {
+          setInfoMessage(null)
+        }, 5000)
       })
     }
   }
@@ -79,6 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Notification message={infoMessage} infoType={infoType}/>
         <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h3>Add a new</h3>
       <PersonForm submitFunction={addPerson} name={newName} handleName={handleNameChange}
