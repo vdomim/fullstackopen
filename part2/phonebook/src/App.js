@@ -1,5 +1,4 @@
 import React, { useState, useEffect  } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -23,10 +22,23 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     const nameObject = {name: newName, number: newNumber}
-    if(persons.map(person => person.name).indexOf(newName) !== -1){
-      alert(newName + "is already added to the Phonebook");
+    const personExists = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())[0]
+    console.log(personExists);
+    if(personExists.length !== 0){
+      const personId = personExists.id
+      console.log(personId);
+      if(window.confirm(`${newName} is already added to the Phonebook, replace the old number with a new one?`)){
+        console.log("replacing")
+        const newPerson = {...personExists, number: newNumber}
+        personService.update(personId, newPerson)
+        .then(updatedPerson =>{
+          console.log("Updated")
+          setNewName("")
+          setNewNumber("")
+          setPersons(persons.map(person => person.id !== personId ? person : updatedPerson))
+        })
+      }
     }else{
-
       personService.create(nameObject).then(newPerson => {
         setPersons(persons.concat(newPerson))
         setNewName("")
