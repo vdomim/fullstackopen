@@ -20,7 +20,7 @@ const App = () => {
     })
   },[])
 
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
     const nameObject = {name: newName, number: newNumber}
     if(persons.map(person => person.name).indexOf(newName) !== -1){
@@ -28,7 +28,6 @@ const App = () => {
     }else{
 
       personService.create(nameObject).then(newPerson => {
-        console.log('person created')
         setPersons(persons.concat(newPerson))
         setNewName("")
         setNewNumber("")
@@ -52,15 +51,28 @@ const App = () => {
     return person.name.toLowerCase().includes(newFilter.toLowerCase())
   }
 
+  const deleteHandler = (event) => {
+    if (window.confirm(`Delete ${event.target.value}?`)){
+      const id = event.target.id
+      personService.deletePerson(id)
+        .then(() => {
+          personService.getAll()
+          .then(initialPersons => {
+            setPersons(initialPersons)
+          })
+      })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
         <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h3>Add a new</h3>
-      <PersonForm submitFunction={addName} name={newName} handleName={handleNameChange}
+      <PersonForm submitFunction={addPerson} name={newName} handleName={handleNameChange}
       number={newNumber} handleNumber={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filterFunction}/>
+      <Persons persons={persons} filter={filterFunction} deletePerson={deleteHandler} />
     </div>
   )
 }

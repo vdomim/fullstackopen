@@ -1,14 +1,16 @@
-const Persons = ({persons, filter}) => {
+const Persons = ({persons, filter, deletePerson}) => {
 	return (
 		persons.filter(filter).map(person => (
-			<Person key={person.name} name={person.name} number={person.number}/>
+			<Person key={person.name} person={person} deletePerson={deletePerson}/>
 		))
 	)	
 }
 
-const Person = ({name, number}) => {
+const Person = ({person, deletePerson}) => {
 	return (
-		<div>{name} {number}</div>
+		<div>
+			{person.name} {person.number} <button id={person.id} value={person.name} onClick={deletePerson}>delete</button>
+		</div>
 	)	
 }
 
